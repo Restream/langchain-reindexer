@@ -1,3 +1,4 @@
+[EN Readme](https://github.com/Restream/langchain-reindexer/blob/main/examples/reindexer_en.ipynb)
 # Reindexer Vector Store for LangChain
 
 Этот пакет предоставляет интеграцию векторного хранилища для базы данных [Reindexer](https://reindexer.io/) с фреймворком [LangChain](https://github.com/hwchase17/langchain).
