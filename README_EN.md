@@ -35,7 +35,7 @@ ids = vector_store.add_documents(documents=documents)
 # Search
 results = vector_store.similarity_search(query="thud", k=1)
 ```
-
+More examples [here](https://github.com/Restream/langchain-reindexer/blob/main/examples/reindexer_en.ipynb)
 ## Features
 
 - Add and delete documents
