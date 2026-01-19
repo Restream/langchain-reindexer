@@ -9,14 +9,7 @@ pip install langchain-reindexer
 ```
 
 ## Использование
-
-Сначала необходимо установить пакет Reindexer для Python:
-
-```bash
-pip install pyreindexer
-```
-
-Затем вы можете использовать векторное хранилище в вашем приложении LangChain:
+Теперь вы можете использовать векторное хранилище в вашем приложении LangChain:
 
 ```python
 from langchain_community.vectorstores import ReindexerVectorStore
