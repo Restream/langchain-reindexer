@@ -9,14 +9,7 @@ pip install langchain-reindexer
 ```
 
 ## Usage
-
-First, you need to install the Reindexer Python package:
-
-```bash
-pip install pyreindexer
-```
-
-Then you can use the vector store in your LangChain application:
+Now you can use the vector store in your LangChain application:
 
 ```python
 from langchain_community.vectorstores import ReindexerVectorStore
