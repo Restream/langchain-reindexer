@@ -1,0 +1,25 @@
+# Ruff configuration
+line-length = 88
+indent-width = 4
+
+[lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "C",    # flake8-comprehensions
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "TID",  # flake8-tidy-imports
+]
+extend-ignore = [
+    "E501", # line too long - handled by black
+]
+
+[format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
