@@ -12,7 +12,7 @@ pip install langchain-reindexer
 Now you can use the vector store in your LangChain application:
 
 ```python
-from langchain_community.vectorstores import ReindexerVectorStore
+from langchain_community import ReindexerVectorStore
 from langchain_openai import OpenAIEmbeddings
 
 # Initialize the vector store
