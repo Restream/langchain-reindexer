@@ -13,7 +13,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         "langchain-core>=0.1.0",
-        "pyreindexer>=0.5.0"
+        "pyreindexer>=0.5.0",
+        "numpy>=2.4.1"
     ],
     extras_require={
         "dev": [
@@ -25,3 +26,4 @@ setup(
     },
     python_requires=">=3.8",
 )
+
