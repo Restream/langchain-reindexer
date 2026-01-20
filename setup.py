@@ -7,14 +7,14 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="langchain-community-reindexer",
-    version="0.1.0",
+    version="0.1.1",
     description="Reindexer vector store integration for LangChain",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Parviz Mirzoev",
     author_email="parviz.mirzoev@restream.ru",
     packages=find_packages(),
-    install_requires=["langchain-core>=0.1.0", "pyreindexer>=0.5.0", "numpy>=2.4.1"],
+    install_requires=["langchain-core>=0.1.0", "pyreindexer>=0.5.0", "numpy>=2.0.2"],
     extras_require={
         "dev": [
             "pytest>=7.0.0",
@@ -23,5 +23,5 @@ setup(
             "mypy>=1.0.0",
         ],
     },
-    python_requires=">=3.8",
+    python_requires=">=3.9",
 )
