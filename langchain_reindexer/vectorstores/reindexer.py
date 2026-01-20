@@ -6,14 +6,13 @@ import json
 import math
 import shutil
 import uuid
+from collections.abc import Iterator, Sequence
 from datetime import timedelta
 from pathlib import Path
 from typing import (
     Any,
     Callable,
-    Iterator,
     Literal,
-    Sequence,
     TypeVar,
 )
 
