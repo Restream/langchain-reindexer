@@ -11,27 +11,21 @@ from pathlib import Path
 from typing import (
     Any,
     Callable,
-    Dict,
     Iterator,
-    List,
     Literal,
-    Optional,
     Sequence,
-    Tuple,
-    Type,
     TypeVar,
-    Union,
 )
 
 try:
-    from pyreindexer import RxConnector
-    from pyreindexer.index_search_params import IndexSearchParamHnsw
-    from pyreindexer.query import CondType
+    from pyreindexer import RxConnector  # type: ignore
+    from pyreindexer.index_search_params import IndexSearchParamHnsw  # type: ignore
+    from pyreindexer.query import CondType  # type: ignore
 except ImportError:
     raise ImportError(
         "Could not import pyreindexer python package. "
         "Please install it with `pip install pyreindexer`"
-    )
+    ) from None
 
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
@@ -180,9 +174,9 @@ class ReindexerVectorStore(VectorStore):
         m: int = 16,
         ef_construction: int = 200,
         multithreading: int = 1,
-        rx_connector_config: Optional[dict] = None,
+        rx_connector_config: dict | None = None,
         rx_namespace: str = "langchain",
-        rx_index_definitions: Optional[List[dict]] = None,
+        rx_index_definitions: list[dict] | None = None,
     ) -> None:
         """Initialize with the given embedding function.
 
@@ -214,7 +208,7 @@ class ReindexerVectorStore(VectorStore):
         self._storage_mode: Literal["memory", "disk", "external"] = "external"
         self._auto_disk_path = False
         self._auto_disk_root_dir = DEFAULT_AUTOMATIC_DISK_DIR
-        self._disk_path: Optional[Path] = None
+        self._disk_path: Path | None = None
         self._config_dsn_value = self._rx_connector_config.get("dsn", "")
         self._prepare_storage_backend()
 
@@ -255,7 +249,7 @@ class ReindexerVectorStore(VectorStore):
                 },
             ]
         else:
-            self._rx_index_definitions = rx_index_definitions
+            self._rx_index_definitions = list(rx_index_definitions)
 
         self.init_rx()
 
@@ -299,7 +293,7 @@ class ReindexerVectorStore(VectorStore):
     def _automatic_disk_path(
         namespace: str,
         *,
-        root: Optional[Path] = None,
+        root: Path | None = None,
         directory_name: str = DEFAULT_AUTOMATIC_DISK_DIR,
     ) -> Path:
         """Return default disk path for automatic persistence without creating it."""
@@ -359,10 +353,10 @@ class ReindexerVectorStore(VectorStore):
 
     @classmethod
     def from_texts(
-        cls: Type[ReindexerVectorStore],
-        texts: List[str],
+        cls: type[ReindexerVectorStore],
+        texts: list[str],
         embedding: Embeddings,
-        metadatas: Optional[List[dict]] = None,
+        metadatas: list[dict] | None = None,
         **kwargs: Any,
     ) -> ReindexerVectorStore:
         """Create a ReindexerVectorStore from a list of texts.
@@ -387,10 +381,10 @@ class ReindexerVectorStore(VectorStore):
 
     def add_documents(
         self,
-        documents: List[Document],
-        ids: Optional[List[str]] = None,
+        documents: list[Document],
+        ids: list[str] | None = None,
         **kwargs: Any,
-    ) -> List[str]:
+    ) -> list[str]:
         """Add documents to the store.
 
         Args:
@@ -411,7 +405,7 @@ class ReindexerVectorStore(VectorStore):
             )
             raise ValueError(msg)
 
-        id_iterator: Iterator[Optional[str]] = (
+        id_iterator: Iterator[str | None] = (
             iter(ids) if ids else iter(doc.id for doc in documents)
         )
 
@@ -431,7 +425,7 @@ class ReindexerVectorStore(VectorStore):
 
         return ids_
 
-    def delete(self, ids: Optional[List[str]] = None, **kwargs: Any) -> None:
+    def delete(self, ids: list[str] | None = None, **kwargs: Any) -> None:
         """Delete documents by their IDs.
 
         Args:
@@ -475,7 +469,7 @@ class ReindexerVectorStore(VectorStore):
     def _apply_metadata_filter(
         self,
         query: Any,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]],
+        filter: dict[str, Any] | Callable[[Document], bool] | None,
     ) -> Any:
         """Apply metadata filter to Reindexer query.
 
@@ -510,11 +504,11 @@ class ReindexerVectorStore(VectorStore):
 
     def _similarity_search_with_score_by_vector(
         self,
-        embedding: List[float],
+        embedding: list[float],
         k: int = 4,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]] = None,
+        filter: dict[str, Any] | Callable[[Document], bool] | None = None,
         **kwargs: Any,
-    ) -> List[Tuple[Document, float, List[float]]]:
+    ) -> list[tuple[Document, float, list[float]]]:
         """Search for similar documents by vector with scores.
 
         Args:
@@ -569,7 +563,7 @@ class ReindexerVectorStore(VectorStore):
 
     def similarity_search(
         self, query: str, k: int = 4, **kwargs: Any
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Search for similar documents by query text.
 
         Args:
@@ -591,7 +585,7 @@ class ReindexerVectorStore(VectorStore):
 
     def similarity_search_with_score(
         self, query: str, k: int = 4, **kwargs: Any
-    ) -> List[Tuple[Document, float]]:
+    ) -> list[tuple[Document, float]]:
         """Search for similar documents by query text with scores.
 
         Args:
@@ -612,8 +606,8 @@ class ReindexerVectorStore(VectorStore):
         ]
 
     def similarity_search_by_vector(
-        self, embedding: List[float], k: int = 4, **kwargs: Any
-    ) -> List[Document]:
+        self, embedding: list[float], k: int = 4, **kwargs: Any
+    ) -> list[Document]:
         """Search for similar documents by embedding vector.
 
         Args:
@@ -633,10 +627,10 @@ class ReindexerVectorStore(VectorStore):
     # Async methods
     async def aadd_documents(
         self,
-        documents: List[Document],
-        ids: Optional[List[str]] = None,
+        documents: list[Document],
+        ids: list[str] | None = None,
         **kwargs: Any,
-    ) -> List[str]:
+    ) -> list[str]:
         """Async add documents to the store.
 
         Args:
@@ -649,7 +643,7 @@ class ReindexerVectorStore(VectorStore):
         """
         return await run_in_executor(None, self.add_documents, documents, ids, **kwargs)
 
-    async def adelete(self, ids: Optional[List[str]] = None, **kwargs: Any) -> None:
+    async def adelete(self, ids: list[str] | None = None, **kwargs: Any) -> None:
         """Async delete documents by their IDs.
 
         Args:
@@ -671,7 +665,7 @@ class ReindexerVectorStore(VectorStore):
 
     async def asimilarity_search(
         self, query: str, k: int = 4, **kwargs: Any
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Async search for similar documents by query text.
 
         Args:
@@ -686,7 +680,7 @@ class ReindexerVectorStore(VectorStore):
 
     async def asimilarity_search_with_score(
         self, query: str, k: int = 4, **kwargs: Any
-    ) -> List[Tuple[Document, float]]:
+    ) -> list[tuple[Document, float]]:
         """Async search for similar documents by query text with scores.
 
         Args:
@@ -702,8 +696,8 @@ class ReindexerVectorStore(VectorStore):
         )
 
     async def asimilarity_search_by_vector(
-        self, embedding: List[float], k: int = 4, **kwargs: Any
-    ) -> List[Document]:
+        self, embedding: list[float], k: int = 4, **kwargs: Any
+    ) -> list[Document]:
         """Async search for similar documents by embedding vector.
 
         Args:
@@ -721,13 +715,13 @@ class ReindexerVectorStore(VectorStore):
     # MMR methods
     def max_marginal_relevance_search_by_vector(
         self,
-        embedding: List[float],
+        embedding: list[float],
         k: int = 4,
         fetch_k: int = 20,
         lambda_mult: float = 0.5,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]] = None,
+        filter: dict[str, Any] | Callable[[Document], bool] | None = None,
         **kwargs: Any,
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Return docs selected using the maximal marginal relevance.
 
         Maximal marginal relevance optimizes for similarity to query AND diversity
@@ -775,9 +769,9 @@ class ReindexerVectorStore(VectorStore):
         k: int = 4,
         fetch_k: int = 20,
         lambda_mult: float = 0.5,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]] = None,
+        filter: dict[str, Any] | Callable[[Document], bool] | None = None,
         **kwargs: Any,
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Return docs selected using the maximal marginal relevance.
 
         Maximal marginal relevance optimizes for similarity to query AND diversity
@@ -813,9 +807,9 @@ class ReindexerVectorStore(VectorStore):
         k: int = 4,
         fetch_k: int = 20,
         lambda_mult: float = 0.5,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]] = None,
+        filter: dict[str, Any] | Callable[[Document], bool] | None = None,
         **kwargs: Any,
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Async return docs selected using the maximal marginal relevance.
 
         Args:
@@ -844,13 +838,13 @@ class ReindexerVectorStore(VectorStore):
 
     async def amax_marginal_relevance_search_by_vector(
         self,
-        embedding: List[float],
+        embedding: list[float],
         k: int = 4,
         fetch_k: int = 20,
         lambda_mult: float = 0.5,
-        filter: Optional[Union[Dict[str, Any], Callable[[Document], bool]]] = None,
+        filter: dict[str, Any] | Callable[[Document], bool] | None = None,
         **kwargs: Any,
-    ) -> List[Document]:
+    ) -> list[Document]:
         """Async return docs selected using the maximal marginal relevance.
 
         Args:
@@ -878,13 +872,13 @@ class ReindexerVectorStore(VectorStore):
         )
 
     # Save/Load methods
-    def _export_all_items(self) -> List[Dict[str, Any]]:
+    def _export_all_items(self) -> list[dict[str, Any]]:
         """Export all items from the current namespace."""
         query = self._database.new_query(self._rx_namespace).select_fields(
             "id", "text", "metadata", "vector"
         )
         results = query.must_execute()
-        exported: List[Dict[str, Any]] = []
+        exported: list[dict[str, Any]] = []
         for item in results:
             exported.append(
                 {
@@ -896,7 +890,7 @@ class ReindexerVectorStore(VectorStore):
             )
         return exported
 
-    def _restore_memory_items(self, items: List[Dict[str, Any]]) -> None:
+    def _restore_memory_items(self, items: list[dict[str, Any]]) -> None:
         """Restore items into the namespace from exported data."""
         for item in items:
             payload = {
@@ -907,7 +901,7 @@ class ReindexerVectorStore(VectorStore):
             }
             self._database.item_upsert(self._rx_namespace, payload)
 
-    def save_local(self, path: Union[str, Path]) -> None:
+    def save_local(self, path: str | Path) -> None:
         """Save the vector store configuration to a local directory.
 
         Note: This saves the configuration, not the actual data.
@@ -951,10 +945,10 @@ class ReindexerVectorStore(VectorStore):
     @classmethod
     def load_local(
         cls,
-        path: Union[str, Path],
+        path: str | Path,
         embedding: Embeddings,
         **kwargs: Any,
-    ) -> "ReindexerVectorStore":
+    ) -> ReindexerVectorStore:
         """Load a vector store from a local directory.
 
         Args:
@@ -971,7 +965,7 @@ class ReindexerVectorStore(VectorStore):
         if not config_path.exists():
             raise ValueError(f"Configuration file not found at {config_path}")
 
-        with open(config_path, "r") as f:
+        with open(config_path) as f:
             config = json.load(f)
 
         storage_mode: str = config.get("storage_mode", "memory")
@@ -999,33 +993,13 @@ class ReindexerVectorStore(VectorStore):
 
         # Validate disk storage path before initialization
         if storage_mode == "disk":
-            if not disk_dump_dir.exists():
-                raise ValueError(f"Saved disk data not found at {disk_dump_dir}")
-
-            dsn = rx_connector_config.get("dsn")
-            if not dsn and auto_disk_path:
-                dsn = "builtin:///"
-                rx_connector_config["dsn"] = dsn
-
-            if not dsn:
-                dsn = stored_connector_config.get("dsn")
-                rx_connector_config["dsn"] = dsn
-
-            if dsn is None:
-                raise ValueError("DSN must be provided to restore disk storage.")
-
-            if dsn == "builtin:///":
-                target_path = cls._automatic_disk_path(
-                    rx_namespace,
-                    directory_name=auto_disk_root_dir,
-                )
-            else:
-                target_path = cls._disk_path_from_dsn(dsn)
-            cls._copy_disk_dump(disk_dump_dir, target_path)
-            rx_connector_config["dsn"] = (
-                "builtin:///"
-                if dsn == "builtin:///"
-                else f"builtin://{target_path.as_posix()}"
+            cls._validate_and_restore_disk_storage(
+                disk_dump_dir,
+                rx_connector_config,
+                stored_connector_config,
+                auto_disk_path,
+                rx_namespace,
+                auto_disk_root_dir,
             )
 
         store = cls(
@@ -1036,15 +1010,65 @@ class ReindexerVectorStore(VectorStore):
             **kwargs,
         )
 
-        if not memory_dump_file.exists():
-            if storage_mode == "memory":
-                raise ValueError(f"Saved memory dump not found at {memory_dump_file}")
-        else:
-            with open(memory_dump_file, "r") as f:
-                items = json.load(f)
-            store._restore_memory_items(items)
+        cls._restore_memory_items_from_file(store, memory_dump_file, storage_mode)
 
         if storage_mode == "disk":
             store._auto_disk_root_dir = auto_disk_root_dir
 
         return store
+
+    @classmethod
+    def _validate_and_restore_disk_storage(
+        cls,
+        disk_dump_dir: Path,
+        rx_connector_config: dict,
+        stored_connector_config: dict,
+        auto_disk_path: bool,
+        rx_namespace: str,
+        auto_disk_root_dir: str,
+    ) -> None:
+        """Validate disk storage path and restore disk storage data."""
+        if not disk_dump_dir.exists():
+            raise ValueError(f"Saved disk data not found at {disk_dump_dir}")
+
+        dsn = rx_connector_config.get("dsn")
+        if not dsn and auto_disk_path:
+            dsn = "builtin:///"
+            rx_connector_config["dsn"] = dsn
+
+        if not dsn:
+            dsn = stored_connector_config.get("dsn")
+            rx_connector_config["dsn"] = dsn
+
+        if dsn is None:
+            raise ValueError("DSN must be provided to restore disk storage.")
+
+        if dsn == "builtin:///":
+            target_path = cls._automatic_disk_path(
+                rx_namespace,
+                directory_name=auto_disk_root_dir,
+            )
+        else:
+            target_path = cls._disk_path_from_dsn(dsn)
+        cls._copy_disk_dump(disk_dump_dir, target_path)
+        rx_connector_config["dsn"] = (
+            "builtin:///"
+            if dsn == "builtin:///"
+            else f"builtin://{target_path.as_posix()}"
+        )
+
+    @classmethod
+    def _restore_memory_items_from_file(
+        cls,
+        store: ReindexerVectorStore,
+        memory_dump_file: Path,
+        storage_mode: str,
+    ) -> None:
+        """Restore memory items from dump file."""
+        if not memory_dump_file.exists():
+            if storage_mode == "memory":
+                raise ValueError(f"Saved memory dump not found at {memory_dump_file}")
+        else:
+            with open(memory_dump_file) as f:
+                items = json.load(f)
+            store._restore_memory_items(items)
