@@ -7,7 +7,7 @@ with open("README.md", encoding="utf-8") as f:
 
 setup(
     name="langchain-community-reindexer",
-    version="0.1.3",
+    version="0.1.4",
     description="Reindexer vector store integration for LangChain",
     long_description=long_description,
     long_description_content_type="text/markdown",
