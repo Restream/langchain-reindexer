@@ -29,12 +29,12 @@ jobs:
       - name: Check formatting
         run: |
           ruff format .
-      #- name: Lint with ruff
-      #  run: |
-      #    ruff check .
-      #- name: Lint with mypy
-      #  run: |
-      #    mypy langchain_reindexer
+      - name: Lint with ruff
+        run: |
+          ruff check .
+      - name: Lint with mypy
+        run: |
+          mypy langchain_reindexer
       - name: Run tests
         run: |
           python -m pytest tests
