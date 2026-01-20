@@ -13,7 +13,7 @@ pip install langchain-reindexer
 Теперь вы можете использовать векторное хранилище в вашем приложении LangChain:
 
 ```python
-from langchain_community import ReindexerVectorStore
+from langchain_reindexer import ReindexerVectorStore
 from langchain_openai import OpenAIEmbeddings
 
 # Инициализация векторного хранилища
