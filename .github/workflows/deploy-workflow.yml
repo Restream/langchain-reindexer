@@ -35,5 +35,4 @@ jobs:
         with:
           verbose: true
           password: ${{ secrets.PYPI_TOKEN }}
-          repository-url: https://pypi.org/legacy/
           attestations: false
