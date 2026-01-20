@@ -5,7 +5,6 @@ import uuid
 from pathlib import Path
 
 import pytest
-
 from langchain_core.documents import Document
 from langchain_core.embeddings import Embeddings
 
@@ -16,7 +15,6 @@ from langchain_reindexer.vectorstores.reindexer import (
 )
 
 
-
 class FakeEmbeddings(Embeddings):
     """Fake embeddings functionality for testing."""
 
@@ -25,7 +23,7 @@ class FakeEmbeddings(Embeddings):
 
         Embeddings encode each text as its index.
         """
-        return [[float(1.0)] * 9 + [float(i)] for i in range(len(texts))]
+        return [[1.0] * 9 + [float(i)] for i in range(len(texts))]
 
     async def aembed_documents(self, texts: list[str]) -> list[list[float]]:
         """Return simple embeddings."""
@@ -38,7 +36,7 @@ class FakeEmbeddings(Embeddings):
         Distance to each text will be that text's index,
         as it was passed to embed_documents.
         """
-        return [float(1.0)] * 9 + [float(0.0)]
+        return [1.0] * 9 + [0.0]
 
     async def aembed_query(self, text: str) -> list[float]:
         """Return constant query embeddings."""
@@ -232,7 +230,7 @@ def test_max_marginal_relevance_search_by_vector(
         Document(page_content="bar", metadata={"id": 2}),
     ]
     vector_store.add_documents(documents)
-    embedding = [float(1.0)] * 9 + [float(0.0)]
+    embedding = [1.0] * 9 + [0.0]
     results = vector_store.max_marginal_relevance_search_by_vector(
         embedding, k=2, fetch_k=2
     )
@@ -318,7 +316,7 @@ async def test_asimilarity_search_by_vector(
         Document(page_content="thud", metadata={"bar": "baz"}),
     ]
     vector_store.add_documents(documents)
-    embedding = [float(1.0)] * 9 + [float(0.0)]
+    embedding = [1.0] * 9 + [0.0]
     results = await vector_store.asimilarity_search_by_vector(embedding, k=2)
     assert len(results) == 2
     assert all(isinstance(doc, Document) for doc in results)
@@ -335,9 +333,7 @@ async def test_amax_marginal_relevance_search(
         Document(page_content="baz", metadata={"id": 3}),
     ]
     vector_store.add_documents(documents)
-    results = await vector_store.amax_marginal_relevance_search(
-        "query", k=2, fetch_k=3
-    )
+    results = await vector_store.amax_marginal_relevance_search("query", k=2, fetch_k=3)
     assert len(results) == 2
     assert all(isinstance(doc, Document) for doc in results)
 
@@ -413,9 +409,7 @@ def test_save_load_memory_storage(embedding, tmp_path) -> None:
     dump_file = save_dir / MEMORY_DUMP_FILENAME
     assert dump_file.exists()
 
-    loaded_store = ReindexerVectorStore.load_local(
-        save_dir, embedding=embedding
-    )
+    loaded_store = ReindexerVectorStore.load_local(save_dir, embedding=embedding)
     results = loaded_store.similarity_search("alpha", k=2)
     assert len(results) == 2
     assert {doc.page_content for doc in results} == {"alpha", "beta"}
@@ -432,9 +426,7 @@ def test_save_load_disk_auto_path(embedding, tmp_path, monkeypatch) -> None:
     )
     store.add_documents([Document(page_content="gamma", metadata={"idx": 3})])
 
-    expected_path = (
-        Path.cwd() / DEFAULT_AUTOMATIC_DISK_DIR / namespace
-    )
+    expected_path = Path.cwd() / DEFAULT_AUTOMATIC_DISK_DIR / namespace
     assert expected_path.exists()
     # Expect Reindexer to create internal files/directories for disk storage.
     assert any(expected_path.iterdir())
@@ -450,4 +442,3 @@ def test_save_load_disk_auto_path(embedding, tmp_path, monkeypatch) -> None:
     results = loaded_store.similarity_search("gamma", k=1)
     assert len(results) == 1
     assert results[0].page_content == "gamma"
-
