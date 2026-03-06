@@ -40,9 +40,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Restream/reindexer-langchain-community"
-Repository = "https://github.com/Restream/reindexer-langchain-community"
-Documentation = "https://github.com/Restream/reindexer-langchain-community/blob/main/README.md"
+Homepage = "https://github.com/Restream/langchain-reindexer"
+Repository = "https://github.com/Restream/langchain-reindexer"
+Documentation = "https://github.com/Restream/langchain-reindexer/blob/main/README.md"
 
 [tool.setuptools.packages.find]
 include = ["langchain_reindexer*"]
